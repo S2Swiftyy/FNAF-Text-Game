@@ -24,9 +24,10 @@ location foxyLoc;
 location bonnieLoc;
 location lookingAt;
 int nightSelected;
-const int shortDelay = 2;
-const int longDelay = 5;
+const int shortDelay = 2; //seconds
+const int longDelay = 5; //seconds
 int freddyDoorCount;
+const int flashDelay = 250; //miliseconds
 
 void startMenu();
 void night1();
@@ -42,6 +43,7 @@ void checkLoc();
 void clearScreen();
 void doesFreddyMove();
 void lightsOut();
+void freddyDeath();
 
 void startMenu()
 {
@@ -542,7 +544,7 @@ void doesFreddyMove()
                 //freddy can only kill you if he is allowed to move forward by the rng (75% chance) and the door is open
                 if(rng >= 25 && leftDoorOpen == true)
                 {
-                    dead = true;
+                    freddyDeath();
                 }
                 else if(rng < 25)
                 {
@@ -589,16 +591,32 @@ void lightsOut()
         cout<<"Right door opened!\n";
     }
 
-    this_thread::sleep_for(seconds(shortDelay));
-    clearScreen();
-    this_thread::sleep_for(seconds(shortDelay));
+    freddyDeath();
+}
 
-    dead = true;
+void freddyDeath()
+{
+    for(int i = 0; i < 10; i++)
+    {
+        if( i % 2 == 0)
+        {
+            clearScreen();
+            this_thread::sleep_for(milliseconds(flashDelay));
+        }
+        else
+        {
+            cout<<"                             %%%           %%####****#####%%       %*******%                        \n                                      %########      %###*###****+******##%   ###%%%%%%##%                      \n                                    %*#%%%%%%%%#%  %%#######*##*******######  *%#####%% ##                      \n                                    #*  %#######% %%%       %###**%        ## %###*###%%*#                      \n                                    %*% %####### %%     %%%##*##***##%%#%%%### %#%##%%#**%                      \n                                     #*#%%%%###  %% %%%%%  %%##****%    %#*#### %#%##**#                        \n                                      %####%%#% %%%%#%       %#***%       %*###%   %%%                          \n                                                %%%##          %%          *###%                                \n                                                 %%##            %#%      %**##%                                \n                                                %%%%##%#####%%%%%%%#####****####%                               \n                                              %%%%%###****+++++++**++++++++****###%                             \n                                              %%%%%##****++++++++**+++++++++++####%                             \n                                              % %%%#*******++++++***++++++++*****#%                             \n                                                %%####*********+***************##%                              \n                                                  %%%%########***####***########%                               \n                                                          %%%%%%#%%%%%%%%%%%  %                                 \n                                     %%                                      %#                                 \n                               %%######%                                   ###*##%  %%                         %\n            ####%%%%%%    %%%####***###%                                   #*#*#*##%#*##%%                   %%#\n            ##**##%###%%%%####********%                                    #***#**##+****##%                  %#\n            *****############******+**                                     %#**####*******###%          %%      \n            +*********#####***+******#            %###                     %#**#######******###%  %%##%         \n            ******##**######**####**##            %%###%                  ##**#%%%%####*****###%%####%          \n            *****#########%%##########              #****#%%#%%%###%%####*****%    %%###########%####%          \n            #**#####%%%#%%  %%%%%%%%%%               %##**##***+**###*****##%%       %%%%%#####%%####%          \n            #######%%%%%                                %%%#%####%%%%%#%%%%%%          %%%%%%##%%######%%%%%%   \n            %%%%%%%%                                                     %%%%%              %%%%%%##%%%%%%##%   \n                                                                         %%%%%                      %%%%%%      \n                                                                         %%%%                                   \n                                                                        %*#%%                                   \n";
+            this_thread::sleep_for(milliseconds(flashDelay));
+        }
+
+        dead = true;
+    }
 }
 
 int main()
 {
     startMenu();
     
+
     return 0;
 }
