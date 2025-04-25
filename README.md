@@ -13,5 +13,7 @@ Tweaked the way movement works, added a system in which animatronics are more li
 V0.2.0
 
 Added Night 2
+
 Bonnie now gets active
+
 Reworked Freddy movement to make Night 1 a bit easier now that difficulty scales with night
