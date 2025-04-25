@@ -11,7 +11,7 @@ enum location{LEFTDOOR, RIGHTDOOR, LEFT, RIGHT, KITCHEN, CLOSET, DINING, COVE, S
 
 string input;
 int timer; //test value for now
-const int timerEnd = 300; //test value for now, I want to make an actual timer at some point but for V1 I am going to make it turn based so it is a functional game
+int timerEnd; //test value for now, I want to make an actual timer at some point but for V1 I am going to make it turn based so it is a functional game
 int nightUnlocked = 1;
 string state;
 bool dead;
@@ -27,6 +27,8 @@ int nightSelected;
 const int shortDelay = 2; //seconds
 const int longDelay = 5; //seconds
 int freddyDoorCount;
+int bonnieDoorCount;
+int chicaDoorCount;
 const int flashDelay = 250; //miliseconds
 
 int freddyMoveForwardValue;
@@ -51,6 +53,9 @@ void doesChicaMove();
 void doesFoxyMove();
 void lightsOut();
 void freddyDeath();
+void bonnieDeath();
+void chicaDeath();
+void foxyDeath();
 void playGame();
 
 void startMenu()
@@ -92,19 +97,19 @@ void startMenu()
     {
         nightSelect(1);
     }
-    else if((input == "2"))
+    else if((input == "2") && nightUnlocked >= 2)
     {
-        //nightSelect(2);
+        nightSelect(2);
     }
-    else if((input == "3"))
+    else if((input == "3") && nightUnlocked >= 3)
     {
         //nightSelect(3);
     }
-    else if((input == "4"))
+    else if((input == "4") && nightUnlocked >= 4)
     {
         //nightSelect(4);
     }
-    else if((input == "5"))
+    else if((input == "5") && nightUnlocked == 5)
     {
         //nightSelect(5);
     }
@@ -126,6 +131,7 @@ void nightSelect(int i)
     {
         case 1:
             nightSelected = 1;
+            timerEnd = 300;
             freddyMoveBackwardValue = 35;
             freddyMoveForwardValue = 70;
             cout<<"NIGHT 1";
@@ -133,6 +139,7 @@ void nightSelect(int i)
             break;
         case 2:
             nightSelected = 2;
+            timerEnd = 600;
             freddyMoveForwardValue = 60;
             freddyMoveBackwardValue = 30;
             bonnieMoveForwardValue = 60;
@@ -179,7 +186,6 @@ void playGame()
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(dead == false && timer != timerEnd)
     {
-        timer += 10;    //current iteration of the game is turn based and not time based so this increments the time
         getline(cin, input);
         checkInput();
         clearInput();
@@ -190,6 +196,8 @@ void playGame()
         if(nightSelected == 1)
         {
             doesFreddyMove();
+
+            timer += 10;    //current iteration of the game is turn based and not time based so this increments the time
 
             //uses energy if doors are closed
             if(leftDoorOpen == false)
@@ -204,7 +212,21 @@ void playGame()
         }
         else if(nightSelected == 2)
         {
-            //NIGHT 2 VALUES
+            doesFreddyMove();
+            doesBonnieMove();
+
+            timer += 10;    //current iteration of the game is turn based and not time based so this increments the time
+
+            //uses energy if doors are closed
+            if(leftDoorOpen == false)
+            {
+                energy -= 4;
+            }
+
+            if(rightDoorOpen == false)
+            {
+                energy -= 4;
+            }
         }
         else if(nightSelected == 3)
         {
@@ -228,11 +250,32 @@ void playGame()
     if(timer == timerEnd)
     {
         clearScreen();
-        cout<<"You Survived!\nNight 2 now unlocked";
+        cout<<"You Survived!\n";
         
-        if(nightUnlocked < 2)
+        if(nightSelected == 1 && nightUnlocked < 2)
         {
             nightUnlocked = 2;
+        }
+        else if(nightSelected == 2 && nightUnlocked < 3)
+        {
+            nightUnlocked = 3;
+        }
+        else if(nightSelected == 3 && nightUnlocked < 4)
+        {
+            nightUnlocked = 4;
+        }
+        else if(nightSelected == 4 && nightUnlocked < 5)
+        {
+            nightUnlocked = 5;
+        }
+
+        if(nightSelected != 5)
+        {
+            cout<<"Night "<<nightUnlocked<<" now unlocked!";
+        }
+        else
+        {
+            cout<<"YOU WIN!";
         }
 
         this_thread::sleep_for(seconds(longDelay));
@@ -541,8 +584,11 @@ void cams()
     cout<<"   ________      ______         _______  |_________|\n";
     cout<<"  |        |    |      |       |       |\n";
     cout<<"  | SUPPLY |----| LEFT |       | RIGHT |\n";
-    cout<<"  |________|    | HALL |  YOU  | HALL  |\n";
-    cout<<"                |______|       |_______|\n\n";
+    cout<<"  |________|    | HALL |       | HALL  |\n";
+    cout<<"                |______|       |_______|\n";
+    cout<<"                    |             |    \n";
+    cout<<"                    |_____YOU_____|    \n";
+    cout<<"                                       \n";
 
     cout<<"To check the location of the animatronics, type\n";
     cout<<"\"STAGE\" - to check the stage\n";
@@ -566,132 +612,140 @@ void clearScreen()
 
 void doesFreddyMove()
 {
-    int rng = rand() % 101; //random number between 0 - 100
-    
-    //Further along in the game, it is more likely that Freddy moves towards the player and less likely he moves away
-    //Lower value location type means closer to player
-    switch (nightSelected)
-    {
-        case 1: //Currently on Night 1
-        
-            //foward value starts at 70 and backwards value starts at 35
-            if(timer >= 40 && timer % 20 == 0) //Freddy only moves on night 1 if the timer is over 40 and moves every other turn
+	int rng = rand() % 101; //random number between 0 - 100
+	
+	bool moves = false;
+	
+	switch(nightSelected)
+	{
+		case 1:
+			if(timer >= 40 && timer % 30 == 0) //Freddy moves if 4 moves have passed and every third move
+			{
+				moves = true;
+			}
+			break;
+		case 2:
+            if(timer >= 40 && timer % 30 == 0) //Freddy moves if 4 moves have passed and every third move
             {
-                if(freddyLoc == STAGE)
-                {
-                    if(rng >= 50)
-                    {
-                        freddyLoc = DINING;
-                    }
-                }
-                else if(freddyLoc == DINING)
-                {
-                    if(rng >= (freddyMoveForwardValue - 20) && rng <= freddyMoveForwardValue)
-                    {
-                        freddyLoc = CLOSET;
-                    }
-                    else if(rng > freddyMoveForwardValue)
-                    {
-                        freddyLoc = LEFT;
-                    }
-                }
-                else if(freddyLoc == CLOSET)
-                {
-                    if(rng >= (freddyMoveForwardValue - 20))
-                    {
-                        freddyLoc = DINING;
-                    }
-                }
-                else if(freddyLoc == LEFT)
-                {
-                    if(rng >= freddyMoveForwardValue)
-                    {
-                        freddyLoc = LEFTDOOR;
-                        freddyDoorCount = 0; //the count of how long freddy has been at the door
-                    }
-                    else if(rng <= freddyMoveBackwardValue)
-                    {
-                        freddyLoc = DINING;
-                        freddyMoveForwardValue = 50; //returns freddy move values to normal once he is backed away
-                        freddyMoveBackwardValue = 35; //returns freddy move values to normal once he is backed away
-                    }
-                }
-                else if(freddyLoc == LEFTDOOR)
-                {
-                    freddyDoorCount++;  //every move that he is there increments the count
-                    
-                    //freddy can only kill you if he is allowed to move forward by the rng (75% chance) and the door is open
-                    if(rng >= 25 && leftDoorOpen == true)
-                    {
-                        freddyDeath();
-                    }
-                    else if(rng < 25)
-                    {
-                        freddyLoc = LEFT;
-                        freddyMoveForwardValue = 70; //changes the value required for freddy to move forward bc we want him to back away
-                        freddyMoveBackwardValue = 60; //changes the value required for freddy to move backwards bc we want him to back away
-                    }
-
-                    //if freddy has been camping the door too long without killing you then he must move back
-                    if(freddyDoorCount > 1)
-                    {
-                        freddyLoc = LEFT;
-                        freddyMoveForwardValue = 70;
-                        freddyMoveBackwardValue = 60;
-                    }
-                }
+                moves = true;
             }
-            break;
-        case 2: //Currently on Night 2
-            
-            break;
-        case 3: //Currently on Night 3
-            //stuff
-            break;
-        case 4: //Currently on Night 4
-            //stuff
-            break;
-        case 5: //Currently on Night 5
-            //stuff
-            break;
-    }
+			break;
+		case 3:
+			//if
+			break;
+		case 4:
+			//if
+			break;
+		case 5:
+			//if
+			break;
+	}
+	
+	if(moves == true)
+	{
+		if(freddyLoc == STAGE)
+        {
+            if(rng >= 30)
+            {
+                freddyLoc = DINING;
+            }
+        }
+        else if(freddyLoc == DINING)
+        {
+            if(rng >= (freddyMoveForwardValue - 30) && rng <= freddyMoveForwardValue)
+            {
+                freddyLoc = CLOSET;
+            }
+            else if(rng > freddyMoveForwardValue)
+            {
+                freddyLoc = LEFT;
+            }
+					
+				//NIGHT 3,4,5 FREDDY CAN GO RIGHT
+        }
+        else if(freddyLoc == CLOSET)
+        {
+            if(rng >= (freddyMoveForwardValue - 20))
+            {
+                freddyLoc = DINING;
+            }
+        }
+        else if(freddyLoc == LEFT)
+        {
+            if(rng >= freddyMoveForwardValue && chicaLoc != LEFTDOOR && bonnieLoc != LEFTDOOR)
+            {
+                freddyLoc = LEFTDOOR;
+                freddyDoorCount = 0; //the count of how long freddy has been at the door
+            }
+            else if(rng <= freddyMoveBackwardValue)
+            {
+                freddyLoc = DINING;
+                        
+				switch(nightSelected)
+				{
+					case 1:
+						freddyMoveForwardValue = 70;
+                        freddyMoveBackwardValue = 35;
+						break;
+					case 2:
+                        freddyMoveForwardValue = 60;
+                        freddyMoveBackwardValue = 30;
+						break;
+					case 3:
+						//set values for more likely to move forward
+						break;
+					case 4:
+						//set values for more likely to move forward
+						break;
+					case 5:
+						//set values for more likely to move forward
+						break;
+				}
+            }
+        }
+        else if(freddyLoc == LEFTDOOR)
+        {
+            freddyDoorCount++;  //every move that he is there increments the count
+                    
+            //freddy can only kill you if he is allowed to move forward by the rng (75% chance) and the door is open
+            if(rng >= 25 && leftDoorOpen == true)
+            {
+                freddyDeath();
+            }
+            else if(rng < 25)
+            {
+                freddyLoc = LEFT;
+
+                //these values stay constant throughout nights bc freddy needs to back the fuck up, this makes it more likely that he retreats to the dining room
+                freddyMoveForwardValue = 70; //changes the value required for freddy to move forward bc we want him to back away
+                freddyMoveBackwardValue = 60; //changes the value required for freddy to move backwards bc we want him to back away
+            }
+
+            //if freddy has been camping the door too long without killing you then he must move back
+            if(freddyDoorCount > 2)
+            {
+                freddyLoc = LEFT;
+						
+				//these values stay constant throughout nights bc freddy needs to back the fuck up
+                freddyMoveForwardValue = 70;
+                freddyMoveBackwardValue = 60;
+            }
+        }
+	}
 }
 
 void doesBonnieMove()
 {
-    //int rng = rand() % 101; //random number between 0 - 100
+    int rng = rand() % 101; //random number between 0 - 100
+    bool moves = false;
 
     switch(nightSelected)
     {
         case 2:
-            
-            if(bonnieLoc == STAGE)
+            if(timer >= 80 && timer % 30 == 0) //Bonnie moves every third move after 8 moves
             {
-                //go to dining
+                moves = true;
             }
-            else if(bonnieLoc == DINING)
-            {
-                //go to left
-            }
-            else if(bonnieLoc == LEFT)
-            {
-                //go to supply closet
-
-                //go to left door
-
-                //go back to dining
-            }
-            else if(bonnieLoc == SUPPLY)
-            {
-                //go to left
-            }
-            else if(bonnieLoc == LEFTDOOR)
-            {
-                //kill you
-
-                //go back to left 
-            }
-
             break;
         case 3:
             //stuff
@@ -702,6 +756,89 @@ void doesBonnieMove()
         case 5:
             //stuff
             break;
+    }
+
+    if(moves == true)
+    {
+        if(bonnieLoc == STAGE)
+        {
+            if(rng >= 40)
+            {
+                bonnieLoc = DINING;
+            }
+        }
+        else if(bonnieLoc == DINING)
+        {
+            if(rng >= bonnieMoveForwardValue)
+            {
+                bonnieLoc = LEFT;
+            }
+        }
+        else if(bonnieLoc == LEFT)
+        {
+            if(rng >= bonnieMoveForwardValue && freddyLoc != LEFTDOOR && chicaLoc != LEFTDOOR)
+            {
+                bonnieLoc = LEFTDOOR;
+                bonnieDoorCount = 0;
+            }
+            else if(rng <= bonnieMoveBackwardValue)
+            {
+                bonnieLoc = DINING;
+
+                switch(nightSelected)
+                {
+                    case 2:
+                        bonnieMoveForwardValue = 60;
+                        bonnieMoveBackwardValue = 30;
+                        break;
+                    case 3:
+                        //night 3 values
+                        break;
+                    case 4:
+                        //night 4 values
+                        break;
+                    case 5:
+                        //night 5 values
+                        break;
+                }
+            }
+            else if(rng >= bonnieMoveForwardValue - 20 && rng < bonnieMoveForwardValue)
+            {
+                bonnieLoc = SUPPLY;
+            }
+        }
+        else if(bonnieLoc == SUPPLY)
+        {
+            if(rng >= bonnieMoveForwardValue)
+            {
+                bonnieLoc = LEFT;
+            }
+        }
+        else if(bonnieLoc == LEFTDOOR)
+        {
+            bonnieDoorCount++;
+            
+            if(rng >= 25 && leftDoorOpen == true)
+            {
+                bonnieDeath();
+            }
+            else if(rng < 25)
+            {
+                bonnieLoc = LEFT;
+
+                //bonnie has already been to the door so he needs to back the fuck up
+                bonnieMoveForwardValue = 70;
+                bonnieMoveBackwardValue = 60;
+            }
+
+            if(bonnieDoorCount > 2)
+            {
+                bonnieLoc = LEFT;
+
+                bonnieMoveForwardValue = 70;
+                bonnieMoveBackwardValue = 60;
+            }
+        }
     }
 }
 
@@ -742,6 +879,35 @@ void freddyDeath()
 
         dead = true;
     }
+}
+
+void bonnieDeath()
+{
+    for(int i = 0; i < 10; i++)
+    {
+        if(i % 2 == 0)
+        {
+            clearScreen();
+            this_thread::sleep_for(milliseconds(flashDelay));
+        }
+        else
+        {
+            cout<<"BE SCARED LOL";
+            this_thread::sleep_for(milliseconds(flashDelay));
+        }
+
+        dead = true;
+    }
+}
+
+void chicaDeath()
+{
+
+}
+
+void foxyDeath()
+{
+
 }
 
 int main()
