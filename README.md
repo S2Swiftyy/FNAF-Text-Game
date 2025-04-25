@@ -5,5 +5,13 @@ Only Freddy is active on Night 1 and more animatronics will be introduced on lat
 As you progress to later nights, the animatronics will be more likely to move towards you and less likely to move away, energy will be more costly so you need to use it wisely, and the animatronics will move more often.
 
 PATCH NOTES (ONLY UPDATED FROM 0.1.2 AND ON)
+
 V0.1.2
+
 Tweaked the way movement works, added a system in which animatronics are more likely to move back to the dining room if they have tried to kill you so that they don't camp in the hallway
+
+V0.2.0
+
+Added Night 2
+Bonnie now gets active
+Reworked Freddy movement to make Night 1 a bit easier now that difficulty scales with night
