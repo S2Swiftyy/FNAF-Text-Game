@@ -10,6 +10,7 @@ V0.1.2
 
 Tweaked the way movement works, added a system in which animatronics are more likely to move back to the dining room if they have tried to kill you so that they don't camp in the hallway
 
+
 V0.2.0
 
 Added Night 2
@@ -17,3 +18,9 @@ Added Night 2
 Bonnie now gets active
 
 Reworked Freddy movement to make Night 1 a bit easier now that difficulty scales with night
+
+Updated map
+
+Added new location on the map "SUPPLY" that Bonnie hide in 
+
+Fixed a bug that caused a crash when user tried to select a night that was not unlocked 
