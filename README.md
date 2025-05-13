@@ -6,7 +6,7 @@ As you progress to later nights, the animatronics will be more likely to move to
 ALL 5 NIGHTS CURRENTLY WORK
 
   However, Freddy and Bonnie are the only working animatronics
------------------
+
 PATCH NOTES (ONLY UPDATED FROM 0.1.2 AND ON)
 -----------------
 V0.1.2
