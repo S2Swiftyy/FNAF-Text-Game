@@ -9,6 +9,7 @@ using namespace std;
 using namespace chrono;
 
 enum location{LEFTDOOR, RIGHTDOOR, LEFT, RIGHT, KITCHEN, CLOSET, DINING, COVE, STAGE, SUPPLY};
+enum foxyStuff{HIDING, PEAKING, REACHING, GONE};
 
 string input;
 int timer; //test value for now
@@ -21,7 +22,7 @@ bool leftDoorOpen = true;
 bool rightDoorOpen = true;
 location freddyLoc;
 location chicaLoc;
-location foxyLoc;
+foxyStuff foxyLoc;
 location bonnieLoc;
 location lookingAt;
 int nightSelected;
@@ -58,6 +59,7 @@ void bonnieDeath();
 void chicaDeath();
 void foxyDeath();
 void playGame();
+void checkFoxy();
 
 void startMenu()
 {
@@ -104,15 +106,15 @@ void startMenu()
     }
     else if((input == "3") && nightUnlocked >= 3)
     {
-        //nightSelect(3);
+        nightSelect(3);
     }
     else if((input == "4") && nightUnlocked >= 4)
     {
-        //nightSelect(4);
+        nightSelect(4);
     }
     else if((input == "5") && nightUnlocked == 5)
     {
-        //nightSelect(5);
+        nightSelect(5);
     }
     else if((input == "exit") | (input == "Exit"))
     {
@@ -141,25 +143,59 @@ void nightSelect(int i)
         case 2:
             nightSelected = 2;
             timerEnd = 600;
+
             freddyMoveForwardValue = 60;
             freddyMoveBackwardValue = 30;
+            
             bonnieMoveForwardValue = 60;
             bonnieMoveBackwardValue = 30;
+
             cout<<"NIGHT 2";
             this_thread::sleep_for(seconds(shortDelay));
             break;
         case 3:
             nightSelected = 3;
+            
+            freddyMoveForwardValue = 55;
+            freddyMoveBackwardValue = 25;
+            
+            bonnieMoveForwardValue = 55;
+            bonnieMoveBackwardValue = 25;
+
+            //Foxy advance value
+
             cout<<"NIGHT 3";
             this_thread::sleep_for(seconds(shortDelay));
             break;
         case 4:
             nightSelected = 4;
+
+            freddyMoveForwardValue = 50;
+            freddyMoveBackwardValue = 20;
+
+            bonnieMoveForwardValue = 50;
+            bonnieMoveBackwardValue = 20;
+
+            //Foxy advance value
+
+            //Chica values
+
             cout<<"NIGHT 4";
             this_thread::sleep_for(seconds(shortDelay));
             break;
         case 5:
             nightSelected = 5;
+
+            freddyMoveForwardValue = 45;
+            freddyMoveBackwardValue = 20;
+            
+            bonnieMoveForwardValue = 45;
+            bonnieMoveBackwardValue = 20;
+
+            //Foxy advance value
+
+            //Chica values
+
             cout<<"NIGHT 5";
             this_thread::sleep_for(seconds(shortDelay));
             break;
@@ -179,7 +215,7 @@ void playGame()
     //set animatronics to starting locations
     freddyLoc = STAGE;
     chicaLoc = STAGE;
-    foxyLoc = COVE;
+    foxyLoc = HIDING;
     bonnieLoc = STAGE;
 
     office(); //Always start the night in the office, sets state to office and prints the list of possible commands
@@ -231,15 +267,58 @@ void playGame()
         }
         else if(nightSelected == 3)
         {
-            //NIGHT 3 VALES
+            doesFreddyMove();
+            doesBonnieMove();
+            //doesFoxyMove();
+
+            timer += 10;
+
+            //uses energy if doors are closed
+            if(leftDoorOpen == false)
+            {
+                energy -= 5;
+            }
+
+            if(rightDoorOpen == false)
+            {
+                energy -= 5;
+            }
         }
         else if(nightSelected == 4)
         {
-            //NIGHT 4 VALUES
+            doesFreddyMove();
+            doesBonnieMove();
+            //doesChicaMove();
+            //doesFoxyMove();
+
+            //uses energy if doors are closed
+            if(leftDoorOpen == false)
+            {
+                energy -= 6;
+            }
+
+            if(rightDoorOpen == false)
+            {
+                energy -= 6;
+            }
         }
         else if(nightSelected == 5)
         {
-            //NIGHT 5 VALUES
+            doesFreddyMove();
+            doesBonnieMove();
+            //doesChicaMove();
+            //doesFoxyMove();
+
+            //uses energy if doors are closed
+            if(leftDoorOpen == false)
+            {
+                energy -= 7;
+            }
+
+            if(rightDoorOpen == false)
+            {
+                energy -= 7;
+            }
         }
 
         if(energy <= 0)
@@ -440,7 +519,7 @@ void checkInput()
         else if((input == "COVE") | (input == "cove"))
         {
             lookingAt = COVE;
-            checkLoc();
+            checkFoxy();
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
@@ -488,12 +567,6 @@ void checkLoc()
     if(freddyLoc == lookingAt)
     {
         cout<<"Freddy is here!\n";
-        seenSomeone = true;
-    }
-
-    if(foxyLoc == lookingAt)
-    {
-        cout<<"Foxy is here!\n";
         seenSomeone = true;
     }
 
@@ -632,13 +705,22 @@ void doesFreddyMove()
             }
 			break;
 		case 3:
-			//if
+            if(timer >= 40 && timer % 30 == 0) //Freddy moves if 4 moves have passed and every third move
+            {
+                moves = true;
+            }
 			break;
 		case 4:
-			//if
+            if(timer >= 30 && timer % 30 == 0) //Freddy moves if 4 moves have passed and every third move
+            {
+                moves = true;
+            }
 			break;
 		case 5:
-			//if
+            if(timer >= 10 && timer % 30 == 0) //Freddy moves if 4 moves have passed and every third move
+            {
+                moves = true;
+            }
 			break;
 	}
 	
@@ -653,22 +735,67 @@ void doesFreddyMove()
         }
         else if(freddyLoc == DINING)
         {
+            int leftOrRight = 0;
+
+            if(nightSelected > 3)
+            {
+                leftOrRight = rand() % 101;
+            }
+            
             if(rng >= (freddyMoveForwardValue - 30) && rng <= freddyMoveForwardValue)
             {
                 freddyLoc = CLOSET;
+            }
+            else if(rng > freddyMoveForwardValue && leftOrRight >= 50) //unless it is night 4 or 5, leftOrRight is always 0, if it is N4/N5 then it is a 50/50 chance to go left or right
+            {
+                freddyLoc = RIGHT;
             }
             else if(rng > freddyMoveForwardValue)
             {
                 freddyLoc = LEFT;
             }
-					
-				//NIGHT 3,4,5 FREDDY CAN GO RIGHT
         }
         else if(freddyLoc == CLOSET)
         {
             if(rng >= (freddyMoveForwardValue - 20))
             {
                 freddyLoc = DINING;
+            }
+        }
+        else if(freddyLoc == RIGHT)
+        {
+            if(rng >= freddyMoveForwardValue && chicaLoc != RIGHTDOOR && bonnieLoc != RIGHTDOOR)
+            {
+                freddyLoc = RIGHTDOOR;
+                freddyDoorCount = 0; //the count of how long freddy has been at the door
+            }
+            else if(rng <= freddyMoveBackwardValue)
+            {
+                freddyLoc = DINING;
+                        
+				switch(nightSelected)
+				{
+					case 1:
+						freddyMoveForwardValue = 70;
+                        freddyMoveBackwardValue = 35;
+						break;
+					case 2:
+                        freddyMoveForwardValue = 60;
+                        freddyMoveBackwardValue = 30;
+						break;
+					case 3:
+						freddyMoveForwardValue = 55;
+                        freddyMoveBackwardValue = 25;
+						break;
+					case 4:
+						freddyMoveForwardValue = 50;
+                        freddyMoveBackwardValue = 20;
+						break;
+					case 5:
+                    freddyMoveForwardValue = 45;
+                    freddyMoveBackwardValue = 20;
+						break;
+				}
             }
         }
         else if(freddyLoc == LEFT)
@@ -693,13 +820,16 @@ void doesFreddyMove()
                         freddyMoveBackwardValue = 30;
 						break;
 					case 3:
-						//set values for more likely to move forward
+						freddyMoveForwardValue = 55;
+                        freddyMoveBackwardValue = 25;
 						break;
 					case 4:
-						//set values for more likely to move forward
+						freddyMoveForwardValue = 50;
+                        freddyMoveBackwardValue = 20;
 						break;
 					case 5:
-						//set values for more likely to move forward
+                    freddyMoveForwardValue = 45;
+                    freddyMoveBackwardValue = 20;
 						break;
 				}
             }
@@ -718,8 +848,8 @@ void doesFreddyMove()
                 freddyLoc = LEFT;
 
                 //these values stay constant throughout nights bc freddy needs to back the fuck up, this makes it more likely that he retreats to the dining room
-                freddyMoveForwardValue = 70; //changes the value required for freddy to move forward bc we want him to back away
-                freddyMoveBackwardValue = 60; //changes the value required for freddy to move backwards bc we want him to back away
+                freddyMoveForwardValue = 80; //changes the value required for freddy to move forward bc we want him to back away
+                freddyMoveBackwardValue = 70; //changes the value required for freddy to move backwards bc we want him to back away
             }
 
             //if freddy has been camping the door too long without killing you then he must move back
@@ -728,8 +858,8 @@ void doesFreddyMove()
                 freddyLoc = LEFT;
 						
 				//these values stay constant throughout nights bc freddy needs to back the fuck up
-                freddyMoveForwardValue = 70;
-                freddyMoveBackwardValue = 60;
+                freddyMoveForwardValue = 80;
+                freddyMoveBackwardValue = 70;
             }
         }
 	}
@@ -749,13 +879,22 @@ void doesBonnieMove()
             }
             break;
         case 3:
-            //stuff
+            if(timer >= 60 && timer % 30 == 0) //Bonnie moves if 6 moves have passed and every third move
+            {
+                moves = true;
+            }
             break;
         case 4:
-            //stuff
+            if(timer >= 50 && timer % 30 == 0) //Bonnie moves if 5 moves have passed and every third move
+            {
+                moves = true;
+            }
             break;
         case 5:
-            //stuff
+            if(timer >= 30 && timer % 30 == 0) //Bonnie moves if 3 moves have passed and every third move
+            {
+                moves = true;
+            }
             break;
     }
 
@@ -770,9 +909,52 @@ void doesBonnieMove()
         }
         else if(bonnieLoc == DINING)
         {
-            if(rng >= bonnieMoveForwardValue)
+            int leftOrRight = 0;
+
+            if(nightSelected > 3)
+            {
+                leftOrRight = rand() % 101;
+            }
+            
+            if(rng >= bonnieMoveForwardValue && leftOrRight >= 50)
+            {
+                bonnieLoc = RIGHT;
+            }
+            else if(rng >= bonnieMoveForwardValue)
             {
                 bonnieLoc = LEFT;
+            }
+        }
+        else if(bonnieLoc == RIGHT)
+        {
+            if(rng >= bonnieMoveForwardValue && freddyLoc != RIGHTDOOR && chicaLoc != RIGHTDOOR)
+            {
+                bonnieLoc = RIGHTDOOR;
+                bonnieDoorCount = 0;
+            }
+            else if(rng <= bonnieMoveBackwardValue)
+            {
+                bonnieLoc = DINING;
+
+                switch(nightSelected)
+                {
+                    case 2:
+                        bonnieMoveForwardValue = 60;
+                        bonnieMoveBackwardValue = 30;
+                        break;
+                    case 3:
+                        bonnieMoveForwardValue = 55;
+                        bonnieMoveBackwardValue = 25;
+                        break;
+                    case 4:
+                        bonnieMoveForwardValue = 50;
+                        bonnieMoveBackwardValue = 20;
+                        break;
+                    case 5:
+                        bonnieMoveForwardValue = 45;
+                        bonnieMoveBackwardValue = 20;
+                        break;
+                }
             }
         }
         else if(bonnieLoc == LEFT)
@@ -793,13 +975,16 @@ void doesBonnieMove()
                         bonnieMoveBackwardValue = 30;
                         break;
                     case 3:
-                        //night 3 values
+                        bonnieMoveForwardValue = 55;
+                        bonnieMoveBackwardValue = 25;
                         break;
                     case 4:
-                        //night 4 values
+                        bonnieMoveForwardValue = 50;
+                        bonnieMoveBackwardValue = 20;
                         break;
                     case 5:
-                        //night 5 values
+                        bonnieMoveForwardValue = 45;
+                        bonnieMoveBackwardValue = 20;
                         break;
                 }
             }
@@ -828,16 +1013,16 @@ void doesBonnieMove()
                 bonnieLoc = LEFT;
 
                 //bonnie has already been to the door so he needs to back the fuck up
-                bonnieMoveForwardValue = 70;
-                bonnieMoveBackwardValue = 60;
+                bonnieMoveForwardValue = 80;
+                bonnieMoveBackwardValue = 70;
             }
 
             if(bonnieDoorCount > 2)
             {
                 bonnieLoc = LEFT;
 
-                bonnieMoveForwardValue = 70;
-                bonnieMoveBackwardValue = 60;
+                bonnieMoveForwardValue = 80;
+                bonnieMoveBackwardValue = 70;
             }
         }
     }
@@ -917,12 +1102,17 @@ void bonnieDeath()
     }
 }
 
+void foxyDeath()
+{
+
+}
+
 void chicaDeath()
 {
 
 }
 
-void foxyDeath()
+void checkFoxy()
 {
 
 }
