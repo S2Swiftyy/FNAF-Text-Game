@@ -1,8 +1,10 @@
 # FNAF-Text-Game
 Text based rendition of Five Night's at Freddy's coded in C++.
-Night 1 is the only currently working night.
-Only Freddy is active on Night 1 and more animatronics will be introduced on later nights.
+
 As you progress to later nights, the animatronics will be more likely to move towards you and less likely to move away, energy will be more costly so you need to use it wisely, and the animatronics will move more often.
+
+ALL 5 NIGHTS CURRENTLY WORK
+  However, Freddy and Bonnie are the only working animatronics
 
 PATCH NOTES (ONLY UPDATED FROM 0.1.2 AND ON)
 
@@ -26,9 +28,17 @@ Added new location on the map "SUPPLY" that Bonnie hide in
 Fixed a bug that caused a crash when user tried to select a night that was not unlocked 
 
 
-
 V0.2.1
 
 Updated the Bonnie jump scare so now it has an "animation" when Bonnie kills you
 
 Added "bonnie_scare.txt" to file list, this is just the text file containing the image of bonnie's jumpscare for the program to read from
+
+
+V0.2.2
+ALL 5 NIGHTS ARE FUNCTIONAL (with only freddy and bonnie)
+  Night dificulty scales accurately, possible to change if too easy/hard
+
+Foxy is still a WIP which is why Night 3 is not finished 
+
+
