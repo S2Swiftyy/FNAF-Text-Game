@@ -4,6 +4,7 @@
 #include <thread>
 #include <limits>
 #include <cstdlib>
+#include <fstream>
 using namespace std;
 using namespace chrono;
 
@@ -892,7 +893,23 @@ void bonnieDeath()
         }
         else
         {
-            cout<<"BE SCARED LOL";
+            
+            ifstream file("bonnie_scare.txt");
+
+            string line;
+
+            if(!file.is_open())
+            {
+                cout<<"ERROR\n";
+            }
+
+            while(getline(file, line))
+            {
+                cout<<line<<"\n";
+            }
+
+            file.close();
+
             this_thread::sleep_for(milliseconds(flashDelay));
         }
 
@@ -913,7 +930,6 @@ void foxyDeath()
 int main()
 {
     startMenu();
-    
 
     return 0;
 }
