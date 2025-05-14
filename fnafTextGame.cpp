@@ -9,7 +9,7 @@ using namespace std;
 using namespace chrono;
 
 enum location{LEFTDOOR, RIGHTDOOR, LEFT, RIGHT, KITCHEN, CLOSET, DINING, COVE, STAGE, SUPPLY};
-enum foxyStuff{HIDING, PEAKING, REACHING, GONE};
+enum foxyStuff{HIDING, PEEKING, REACHING, GONE};
 
 string input;
 int timer; //test value for now
@@ -24,21 +24,22 @@ location freddyLoc;
 location chicaLoc;
 foxyStuff foxyLoc;
 location bonnieLoc;
-location lookingAt;
 int nightSelected;
 const int shortDelay = 2; //seconds
 const int longDelay = 5; //seconds
 int freddyDoorCount;
 int bonnieDoorCount;
 int chicaDoorCount;
+int tempTimer;
 const int flashDelay = 250; //miliseconds
 
 int freddyMoveForwardValue;
 int freddyMoveBackwardValue;
 int bonnieMoveForwardValue;
 int bonnieMoveBackwardValue;
-int chicaMoveFowardValue;
+int chicaMoveForwardValue;
 int chicaMoveBackwardValue;
+int foxyMoveForwardValue;
 
 
 void startMenu();
@@ -47,7 +48,7 @@ void office();
 void cams();
 void clearInput();
 void checkInput();
-void checkLoc();
+void checkLoc(location);
 void clearScreen();
 void doesFreddyMove();
 void doesBonnieMove();
@@ -155,6 +156,7 @@ void nightSelect(int i)
             break;
         case 3:
             nightSelected = 3;
+            timerEnd = 900;
             
             freddyMoveForwardValue = 55;
             freddyMoveBackwardValue = 25;
@@ -162,13 +164,14 @@ void nightSelect(int i)
             bonnieMoveForwardValue = 55;
             bonnieMoveBackwardValue = 25;
 
-            //Foxy advance value
+            foxyMoveForwardValue = 75;
 
             cout<<"NIGHT 3";
             this_thread::sleep_for(seconds(shortDelay));
             break;
         case 4:
             nightSelected = 4;
+            timerEnd = 1200;
 
             freddyMoveForwardValue = 50;
             freddyMoveBackwardValue = 20;
@@ -176,15 +179,17 @@ void nightSelect(int i)
             bonnieMoveForwardValue = 50;
             bonnieMoveBackwardValue = 20;
 
-            //Foxy advance value
+            foxyMoveForwardValue = 65;
 
-            //Chica values
+            chicaMoveForwardValue = 60;
+            chicaMoveBackwardValue = 20;
 
             cout<<"NIGHT 4";
             this_thread::sleep_for(seconds(shortDelay));
             break;
         case 5:
             nightSelected = 5;
+            timerEnd = 1500;
 
             freddyMoveForwardValue = 45;
             freddyMoveBackwardValue = 20;
@@ -192,9 +197,10 @@ void nightSelect(int i)
             bonnieMoveForwardValue = 45;
             bonnieMoveBackwardValue = 20;
 
-            //Foxy advance value
+            foxyMoveForwardValue = 55;
 
-            //Chica values
+            chicaMoveForwardValue = 50;
+            chicaMoveBackwardValue = 20;
 
             cout<<"NIGHT 5";
             this_thread::sleep_for(seconds(shortDelay));
@@ -269,7 +275,7 @@ void playGame()
         {
             doesFreddyMove();
             doesBonnieMove();
-            //doesFoxyMove();
+            doesFoxyMove();
 
             timer += 10;
 
@@ -289,7 +295,7 @@ void playGame()
             doesFreddyMove();
             doesBonnieMove();
             //doesChicaMove();
-            //doesFoxyMove();
+            doesFoxyMove();
 
             //uses energy if doors are closed
             if(leftDoorOpen == false)
@@ -307,7 +313,7 @@ void playGame()
             doesFreddyMove();
             doesBonnieMove();
             //doesChicaMove();
-            //doesFoxyMove();
+            doesFoxyMove();
 
             //uses energy if doors are closed
             if(leftDoorOpen == false)
@@ -497,57 +503,49 @@ void checkInput()
         }
         else if((input == "STAGE") | (input == "stage"))
         {
-            lookingAt = STAGE;
-            checkLoc();
+            checkLoc(STAGE);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
         else if((input == "CLOSET") | (input == "closet"))
         {
-            lookingAt = CLOSET;
-            checkLoc();
+            checkLoc(CLOSET);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
         else if((input == "DINING") | (input == "dining"))
         {
-            lookingAt = DINING;
-            checkLoc();
+            checkLoc(DINING);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
         else if((input == "COVE") | (input == "cove"))
         {
-            lookingAt = COVE;
             checkFoxy();
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
         else if((input == "KITCHEN") | (input == "kitchen"))
         {
-            lookingAt = KITCHEN;
-            checkLoc();
+            checkLoc(KITCHEN);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
         else if((input == "LEFT") | (input == "left"))
         {
-            lookingAt = LEFT;
-            checkLoc();
+            checkLoc(LEFT);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
         else if((input == "RIGHT") | (input == "right"))
         {
-            lookingAt = RIGHT;
-            checkLoc();
+            checkLoc(RIGHT);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
         else if((input == "SUPPLY") | (input == "supply"))
         {
-            lookingAt = SUPPLY;
-            checkLoc();
+            checkLoc(SUPPLY);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
@@ -560,7 +558,7 @@ void checkInput()
     }
 }
 
-void checkLoc()
+void checkLoc(location lookingAt)
 {
     bool seenSomeone = false;
     
@@ -1048,6 +1046,80 @@ void lightsOut()
     freddyDeath();
 }
 
+void doesFoxyMove()
+{
+    int rng = rand() % 101;
+    bool moves = false;
+
+    if(nightSelected == 3)
+    {
+        if(timer > 100 && timer % 20 == 0)
+        {
+            moves = true;
+        }
+    }
+    else if(nightSelected == 4)
+    {
+        if(timer > 80 && timer % 20 == 0)
+        {
+            moves = true;
+        }
+    }
+    else if(nightSelected == 5)
+    {
+        if(timer > 60 && timer % 20 == 0)
+        {
+            moves = true;
+        }
+    }
+
+    if(moves == true)
+    {
+        switch(foxyLoc)
+        {
+            case HIDING:
+                if(rng >= foxyMoveForwardValue)
+                {
+                    foxyLoc = PEEKING;
+                }
+                break;
+            case PEEKING:
+                if(rng >= foxyMoveForwardValue)
+                {
+                    foxyLoc = REACHING;
+                }
+                break;
+            case REACHING:
+                if(rng >= foxyMoveForwardValue)
+                {
+                    foxyLoc = GONE;
+                    tempTimer = timer + 20; //You get 2 moves to react
+                    cout<<"\nYou hear running!\n";
+                }
+                break;
+            case GONE:
+                if(timer == tempTimer)
+                {
+                    if(leftDoorOpen == true)
+                    {
+                        foxyDeath();
+                    }
+                    else
+                    {
+                        cout<<"\nTHUD!\n";
+                        foxyLoc = HIDING;
+                    }
+                }
+                break;
+        }
+    }
+}
+
+void doesChicaMove()
+{
+
+}
+
 void freddyDeath()
 {
     for(int i = 0; i < 10; i++)
@@ -1114,7 +1186,50 @@ void chicaDeath()
 
 void checkFoxy()
 {
+    if(foxyLoc == HIDING)
+    {
+        ifstream file("stage_1.txt");
+        
+        string line;
 
+        while(getline(file, line))
+        {
+            cout<<line<<"\n";
+        }
+    }
+    else if(foxyLoc == PEEKING)
+    {
+        ifstream file("stage_2.txt");
+        
+        string line;
+
+        while(getline(file, line))
+        {
+            cout<<line<<"\n";
+        }
+    }
+    else if(foxyLoc == REACHING)
+    {
+        ifstream file("stage_3.txt");
+        
+        string line;
+
+        while(getline(file, line))
+        {
+            cout<<line<<"\n";
+        }
+    }
+    else if(foxyLoc == GONE)
+    {
+        ifstream file("stage_4.txt");
+
+        string line;
+
+        while(getline(file, line))
+        {
+            cout<<line<<"\n";
+        }
+    }
 }
 
 int main()
