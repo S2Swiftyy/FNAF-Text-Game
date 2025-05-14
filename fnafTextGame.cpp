@@ -1176,7 +1176,37 @@ void bonnieDeath()
 
 void foxyDeath()
 {
+    for(int i = 0; i < 10; i++)
+    {
+        if(i % 2 == 0)
+        {
+            clearScreen();
+            this_thread::sleep_for(milliseconds(flashDelay));
+        }
+        else
+        {
+            
+            ifstream file("foxy_scare.txt");
 
+            string line;
+
+            if(!file.is_open())
+            {
+                cout<<"ERROR\n";
+            }
+
+            while(getline(file, line))
+            {
+                cout<<line<<"\n";
+            }
+
+            file.close();
+
+            this_thread::sleep_for(milliseconds(flashDelay));
+        }
+
+        dead = true;
+    }
 }
 
 void chicaDeath()
