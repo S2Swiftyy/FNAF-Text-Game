@@ -51,6 +51,17 @@ Foxy is now active
 
 Foxy becomes active on night 3, once Foxy is heard running through the halls, the player has 2 turns to close the door and stop the attack
 
+Foxy includes 4 image files (so far) that display Pirate's Cove and show the different stages of Foxy's movement
+
 Made changes on the backend to make the code run smoother when checking cams, no player impact
+
+-----------------
+V0.3.1
+
+Fixed an issue where Foxy couldn't kill the player
+
+Added Foxy jumpscare animation
+
+Added "foxy_scare.txt" to file list, this is foxy jumpscare
 
 -----------------
