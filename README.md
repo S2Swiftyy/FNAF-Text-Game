@@ -45,3 +45,12 @@ ALL 5 NIGHTS ARE FUNCTIONAL (with only freddy and bonnie)
 Foxy is still a WIP which is why Night 3 is not finished 
 
 -----------------
+V0.3.0
+
+Foxy is now active
+
+Foxy becomes active on night 3, once Foxy is heard running through the halls, the player has 2 turns to close the door and stop the attack
+
+Made changes on the backend to make the code run smoother when checking cams, no player impact
+
+-----------------
