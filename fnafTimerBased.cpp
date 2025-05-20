@@ -1264,7 +1264,7 @@ void doesFoxyMove()
                 if(rng >= foxyMoveForwardValue)
                 {
                     foxyLoc = GONE;
-                    tempTimer = timerValue + 20; //You get 2 moves to react
+                    tempTimer = timerValue + 10; //You get 10 seconds to react
                     cout<<"\nYou hear running!\n";
                 }
                 break;
@@ -1277,7 +1277,7 @@ void doesFoxyMove()
                     }
                     else
                     {
-                        cout<<"\nTHUD!\n";
+                        cout<<"\nBNAG!!\n";
                         foxyLoc = HIDING;
                     }
                 }
