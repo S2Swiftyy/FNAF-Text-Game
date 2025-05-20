@@ -1,13 +1,10 @@
 # FNAF-Text-Game
 Text based rendition of Five Night's at Freddy's coded in C++.
 
-As you progress to later nights, the animatronics will be more likely to move towards you and less likely to move away, energy will be more costly so you need to use it wisely, and the animatronics will move more often.
+As you progress to later nights, the animatronics will be more likely to move towards you and less likely to move away, nights last longer, energy will be more costly (so you need to use it wisely), and the animatronics will move more often.
 
-ALL 5 NIGHTS CURRENTLY WORK
-
-  However, Freddy and Bonnie are the only working animatronics
-
-PATCH NOTES (ONLY UPDATED FROM 0.1.2 AND ON)
+-----------------
+PATCH NOTES (ONLY UPDATED FROM V0.1.2 AND ON)
 -----------------
 V0.1.2
 
@@ -64,4 +61,12 @@ Added Foxy jumpscare animation
 
 Added "foxy_scare.txt" to file list, this is foxy jumpscare
 
+-----------------
+V0.4.0
+
+ALL 5 NIGHTS ARE FULLY FINISHED
+
+Chica is now working
+
+Still turned based but that is being worked on and should soon be time based instead
 -----------------
