@@ -294,7 +294,7 @@ void playGame()
         {
             doesFreddyMove();
             doesBonnieMove();
-            //doesChicaMove();
+            doesChicaMove();
             doesFoxyMove();
 
             //uses energy if doors are closed
@@ -312,7 +312,7 @@ void playGame()
         {
             doesFreddyMove();
             doesBonnieMove();
-            //doesChicaMove();
+            doesChicaMove();
             doesFoxyMove();
 
             //uses energy if doors are closed
@@ -748,7 +748,7 @@ void doesFreddyMove()
             {
                 freddyLoc = RIGHT;
             }
-            else if(rng > freddyMoveForwardValue)
+            else if(rng > freddyMoveForwardValue && leftOrRight < 50)
             {
                 freddyLoc = LEFT;
             }
@@ -790,8 +790,8 @@ void doesFreddyMove()
                         freddyMoveBackwardValue = 20;
 						break;
 					case 5:
-                    freddyMoveForwardValue = 45;
-                    freddyMoveBackwardValue = 20;
+                        freddyMoveForwardValue = 45;
+                        freddyMoveBackwardValue = 20;
 						break;
 				}
             }
@@ -826,8 +826,8 @@ void doesFreddyMove()
                         freddyMoveBackwardValue = 20;
 						break;
 					case 5:
-                    freddyMoveForwardValue = 45;
-                    freddyMoveBackwardValue = 20;
+                        freddyMoveForwardValue = 45;
+                        freddyMoveBackwardValue = 20;
 						break;
 				}
             }
@@ -854,6 +854,34 @@ void doesFreddyMove()
             if(freddyDoorCount > 2)
             {
                 freddyLoc = LEFT;
+						
+				//these values stay constant throughout nights bc freddy needs to back the fuck up
+                freddyMoveForwardValue = 80;
+                freddyMoveBackwardValue = 70;
+            }
+        }
+        else if(freddyLoc == RIGHTDOOR)
+        {
+            freddyDoorCount++;  //every move that he is there increments the count
+                    
+            //freddy can only kill you if he is allowed to move forward by the rng (75% chance) and the door is open
+            if(rng >= 25 && rightDoorOpen == true)
+            {
+                freddyDeath();
+            }
+            else if(rng < 25)
+            {
+                freddyLoc = RIGHT;
+
+                //these values stay constant throughout nights bc freddy needs to back the fuck up, this makes it more likely that he retreats to the dining room
+                freddyMoveForwardValue = 80; //changes the value required for freddy to move forward bc we want him to back away
+                freddyMoveBackwardValue = 70; //changes the value required for freddy to move backwards bc we want him to back away
+            }
+
+            //if freddy has been camping the door too long without killing you then he must move back
+            if(freddyDoorCount > 2)
+            {
+                freddyLoc = RIGHT;
 						
 				//these values stay constant throughout nights bc freddy needs to back the fuck up
                 freddyMoveForwardValue = 80;
@@ -1023,6 +1051,31 @@ void doesBonnieMove()
                 bonnieMoveBackwardValue = 70;
             }
         }
+        else if(bonnieLoc == RIGHTDOOR)
+        {
+            bonnieDoorCount++;
+            
+            if(rng >= 25 && rightDoorOpen == true)
+            {
+                bonnieDeath();
+            }
+            else if(rng < 25)
+            {
+                bonnieLoc = RIGHT;
+
+                //bonnie has already been to the door so he needs to back the fuck up
+                bonnieMoveForwardValue = 80;
+                bonnieMoveBackwardValue = 70;
+            }
+
+            if(bonnieDoorCount > 2)
+            {
+                bonnieLoc = RIGHT;
+
+                bonnieMoveForwardValue = 80;
+                bonnieMoveBackwardValue = 70;
+            }
+        }
     }
 }
 
@@ -1117,7 +1170,157 @@ void doesFoxyMove()
 
 void doesChicaMove()
 {
+    int rng = rand() % 101;
+    bool moves = false;
 
+    if(nightSelected == 4)
+    {
+        if(timer > 110 && timer % 20 == 0)
+        {
+            moves = true;
+        }
+    }
+    else if(nightSelected == 5)
+    {
+        if(timer > 90 && timer % 20 == 0)
+        {
+            moves = true;
+        }
+    }
+
+    if(moves == true)
+    {
+    
+        if(chicaLoc == STAGE)
+        {
+            if(rng >= chicaMoveForwardValue)
+            {
+                chicaLoc = DINING;
+            }
+        }
+        else if(chicaLoc == DINING)
+        {
+            int leftOrRight = rand() % 101;
+
+            if(rng >= chicaMoveForwardValue && leftOrRight < 50)
+            {
+                chicaLoc = LEFT;
+            }
+            else if(rng >= chicaMoveForwardValue - 20 && rng < chicaMoveForwardValue)
+            {
+                chicaLoc = KITCHEN;
+            }
+            else if(rng >= chicaMoveForwardValue && leftOrRight >= 50)
+            {
+                chicaLoc = RIGHT;
+            }
+        }
+        else if(chicaLoc == KITCHEN)
+        {
+            if(rng >= chicaMoveForwardValue)
+            {
+                chicaLoc = DINING;
+            }
+        }
+        else if(chicaLoc == LEFT)
+        {
+            if(rng >= chicaMoveForwardValue && freddyLoc != LEFTDOOR && bonnieLoc != LEFTDOOR)
+            {
+                chicaLoc = LEFTDOOR;
+                chicaDoorCount = 0; //the count of how long Chcia has been at the door
+            }
+            else if(rng <= chicaMoveBackwardValue)
+            {
+                chicaLoc = DINING;
+                      
+    		    switch(nightSelected)
+    		    {
+				    case 4:
+					    chicaMoveForwardValue = 60;
+                        chicaMoveBackwardValue = 20;
+    				    break;
+    				case 5:
+                        chicaMoveForwardValue = 50;
+                        chicaMoveBackwardValue = 20;
+    		    		break;
+			    }
+            }
+        }
+        else if(chicaLoc == RIGHT)
+        {
+            if(rng >= chicaMoveForwardValue && freddyLoc != RIGHTDOOR && bonnieLoc != RIGHTDOOR)
+            {
+                chicaLoc = RIGHTDOOR;
+                chicaDoorCount = 0; //the count of how long Chcia has been at the door
+            }
+            else if(rng <= chicaMoveBackwardValue)
+            {
+                chicaLoc = DINING;
+                      
+    		    switch(nightSelected)
+    		    {
+				    case 4:
+					    chicaMoveForwardValue = 60;
+                        chicaMoveBackwardValue = 20;
+    				    break;
+    				case 5:
+                        chicaMoveForwardValue = 50;
+                        chicaMoveBackwardValue = 20;
+    		    		break;
+			    }
+            }
+        }
+        else if(chicaLoc == LEFTDOOR)
+        {
+            chicaDoorCount++;
+            
+            if(rng >= 25 && leftDoorOpen == true)
+            {
+                chicaDeath();
+            }
+            else if(rng < 25)
+            {
+                chicaLoc = LEFT;
+
+                //Chica has already been to the door so she needs to back the fuck up
+                chicaMoveForwardValue = 80;
+                chicaMoveBackwardValue = 70;
+            }
+
+            if(chicaDoorCount > 2)
+            {
+                chicaLoc = LEFT;
+
+                chicaMoveForwardValue = 80;
+                chicaMoveBackwardValue = 70;
+            }
+        }
+        else if(chicaLoc == RIGHTDOOR)
+        {
+            chicaDoorCount++;
+            
+            if(rng >= 25 && rightDoorOpen == true)
+            {
+                chicaDeath();
+            }
+            else if(rng < 25)
+            {
+                chicaLoc = RIGHT;
+
+                //Chica has already been to the door so she needs to back the fuck up
+                chicaMoveForwardValue = 80;
+                chicaMoveBackwardValue = 70;
+            }
+
+            if(chicaDoorCount > 2)
+            {
+                chicaLoc = RIGHT;
+
+                chicaMoveForwardValue = 80;
+                chicaMoveBackwardValue = 70;
+            }
+        }
+    }   
 }
 
 void freddyDeath()
@@ -1211,7 +1414,37 @@ void foxyDeath()
 
 void chicaDeath()
 {
+    for(int i = 0; i < 10; i++)
+    {
+        if(i % 2 == 0)
+        {
+            clearScreen();
+            this_thread::sleep_for(milliseconds(flashDelay));
+        }
+        else
+        {
+            
+            ifstream file("chica_scare.txt");
 
+            string line;
+
+            if(!file.is_open())
+            {
+                cout<<"ERROR\n";
+            }
+
+            while(getline(file, line))
+            {
+                cout<<line<<"\n";
+            }
+
+            file.close();
+
+            this_thread::sleep_for(milliseconds(flashDelay));
+        }
+
+        dead = true;
+    }
 }
 
 void checkFoxy()
@@ -1265,6 +1498,6 @@ void checkFoxy()
 int main()
 {
     startMenu();
-
+    
     return 0;
 }
