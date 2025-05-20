@@ -71,3 +71,12 @@ Chica is now working
 Still turned based but that is being worked on and should soon be time based instead
 
 -----------------
+V1.0.0
+
+GAME IS READY FOR TESTING
+
+Game is now timer based rather than turn based, if you wish to play the turn based version it is still available
+
+Regular, timer based version is simply fnaf.exe, turn based version is fnafTurnBased.exe
+
+-----------------
