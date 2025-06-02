@@ -69,10 +69,12 @@ void chicaDeath();
 void foxyDeath();
 void playGame();
 void checkFoxy();
+void loadGame();
+void saveGame();
 
 void timer()
 {
-    while(true)
+    while(gameRunning)
     {
         this_thread::sleep_for(seconds(1));
         ++timerValue;
@@ -270,7 +272,7 @@ void winOrDie()
 void startMenu()
 {
     clearScreen();
-    cout<<"Five Nights at Freddy's\nbut in text format\n\nType \"Start\" to begin Night 1 or choose which Night to play by typing the number\nType \"Exit\" to quit\n";
+    cout<<"Five Nights at Freddy's\nbut in text format\n\nType \"Start\" to begin Night 1 or choose which Night to play by typing the number\nType \"Load\" to load a save\nType \"Save\" to save game\nType \"Exit\" to quit\n";
     cout<<"Nights Unlocked - \n";
     switch (nightUnlocked)
     {
@@ -325,6 +327,14 @@ void startMenu()
     else if((input == "exit") | (input == "Exit"))
     {
         exit(0);
+    }
+    else if((input == "Load") | (input == "load") | (input == "l"))
+    {
+        loadGame();
+    }
+    else if((input == "Save") | (input == "save") | (input == "s"))
+    {
+        saveGame();
     }
     else
     {
@@ -586,53 +596,53 @@ void checkInput()
     }
     else if(state == "cams")
     {
-        if((input == "Exit") | (input == "exit"))
+        if((input == "Exit") | (input == "exit") | (input == "e"))
         {
             office();
         }
-        else if((input == "STAGE") | (input == "stage"))
+        else if((input == "STAGE") | (input == "stage") | (input == "1"))
         {
             checkLoc(STAGE);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
-        else if((input == "CLOSET") | (input == "closet"))
+        else if((input == "CLOSET") | (input == "closet") | (input == "2"))
         {
             checkLoc(CLOSET);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
-        else if((input == "DINING") | (input == "dining"))
+        else if((input == "DINING") | (input == "dining") | (input == "4"))
         {
             checkLoc(DINING);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
-        else if((input == "COVE") | (input == "cove"))
+        else if((input == "COVE") | (input == "cove") | (input == "3"))
         {
             checkFoxy();
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
-        else if((input == "KITCHEN") | (input == "kitchen"))
+        else if((input == "KITCHEN") | (input == "kitchen") | (input == "8"))
         {
             checkLoc(KITCHEN);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
-        else if((input == "LEFT") | (input == "left"))
+        else if((input == "LEFT") | (input == "left") | (input == "6"))
         {
             checkLoc(LEFT);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
-        else if((input == "RIGHT") | (input == "right"))
+        else if((input == "RIGHT") | (input == "right") | (input == "7"))
         {
             checkLoc(RIGHT);
             this_thread::sleep_for(seconds(shortDelay));
             cams();
         }
-        else if((input == "SUPPLY") | (input == "supply"))
+        else if((input == "SUPPLY") | (input == "supply") | (input == "5"))
         {
             checkLoc(SUPPLY);
             this_thread::sleep_for(seconds(shortDelay));
@@ -724,43 +734,43 @@ void cams()
     clearScreen();
     cout<<"               _________\n";
     cout<<"              |         |\n";
-    cout<<"              |  STAGE  |\n";
+    cout<<"              | 1-STAGE |\n";
     cout<<"              |_________|\n";
     cout<<"                   |\n";
     cout<<" __________        |\n";
     cout<<"|          |     _________________________\n";
-    cout<<"|  CLOSET  |----|                         |\n";
+    cout<<"| 2-CLOSET |----|                         |\n";
     cout<<"|__________|    |                         |\n";
     cout<<"                |                         |\n";
     cout<<"                |                         |\n";
-    cout<<"     ________   |       DINING ROOM       |\n";
+    cout<<"     ________   |      4-DINING ROOM      |\n";
     cout<<"    |        |  |                         |\n";
-    cout<<"    |  COVE  |--|                         |\n";
+    cout<<"    | 3-COVE |--|                         |\n";
     cout<<"    |________|  |                         |\n";
     cout<<"                |_________________________|\n";
     cout<<"                    |              |     |\n";
     cout<<"                    |              |     |_________\n";
-    cout<<"                    |              |     |         |\n";
+    cout<<"                    |              |     |    8-   |\n";
     cout<<"                    |              |     | KITCHEN |\n";
     cout<<"   ________      ______         _______  |_________|\n";
-    cout<<"  |        |    |      |       |       |\n";
-    cout<<"  | SUPPLY |----| LEFT |       | RIGHT |\n";
+    cout<<"  |        |    |  6-  |       |   7-  |\n";
+    cout<<"  |5-SUPPLY|----| LEFT |       | RIGHT |\n";
     cout<<"  |________|    | HALL |       | HALL  |\n";
     cout<<"                |______|       |_______|\n";
     cout<<"                    |             |    \n";
     cout<<"                    |_____YOU_____|    \n";
     cout<<"                                       \n";
 
-    cout<<"To check the location of the animatronics, type\n";
-    cout<<"\"STAGE\" - to check the stage\n";
-    cout<<"\"CLOSET\" - to check the close\n";
-    cout<<"\"DINING\" - to check the dining room\n";
-    cout<<"\"COVE\" - to check the cove\n";
-    cout<<"\"KITCHEN\" - to check the kitchen\n";
-    cout<<"\"SUPPLY\" - to check the supply closet\n";
-    cout<<"\"LEFT\" - to check the left hallway\n";
-    cout<<"\"RIGHT\" - to check the right hallway\n";
-    cout<<"\"EXIT\" - to exit the cameras\n";
+    cout<<"To check the location of the animatronics, type the corresponding number or \n";
+    cout<<"\"1\" or \"STAGE\" - to check the stage\n";
+    cout<<"\"2\" or \"CLOSET\" - to check the close\n";
+    cout<<"\"3\" or \"COVE\" - to check the cove\n";
+    cout<<"\"4\" or \"DINING\" - to check the dining room\n";
+    cout<<"\"5\" or \"SUPPLY\" - to check the supply closet\n";
+    cout<<"\"6\" or \"LEFT\" - to check the left hallway\n";
+    cout<<"\"7\" or \"RIGHT\" - to check the right hallway\n";
+    cout<<"\"8\" or \"KITCHEN\" - to check the kitchen\n";
+    cout<<"\"e\" or \"EXIT\" - to exit the cameras\n";
 }
 
 void clearScreen()
@@ -1617,6 +1627,50 @@ void checkFoxy()
             cout<<line<<"\n";
         }
     }
+}
+
+void loadGame()
+{
+    ifstream saveFile("gameSave.txt");
+    
+    int savedNight;
+
+    saveFile >> savedNight;
+
+    if(savedNight <= 5 && savedNight >= 1)
+    {
+        nightUnlocked = savedNight;
+    }
+    else
+    {
+        cout<<"Corrupted saved file!";
+        this_thread::sleep_for(seconds(shortDelay));
+    }
+
+    clearScreen();
+    startMenu();
+}
+
+void saveGame()
+{
+    ofstream saveFile("gameSave.txt", ios::trunc);
+
+    if(saveFile.is_open())
+    {
+        saveFile << nightUnlocked;
+        saveFile.close();
+        cout<<"Game Saved!";
+        this_thread::sleep_for(seconds(shortDelay));
+    }
+    else
+    {
+        cout<<"Error: Game Not Saved";
+        this_thread::sleep_for(seconds(shortDelay));
+    }
+    
+
+    clearScreen();
+    startMenu();
 }
 
 int main()
