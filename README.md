@@ -80,3 +80,12 @@ Game is now timer based rather than turn based, if you wish to play the turn bas
 Regular, timer based version is simply fnaf.exe, turn based version is fnafTurnBased.exe
 
 -----------------
+V1.0.1
+
+Updated the cameras to be able to move with numbers as well as the name of the location to reduce the amount of typing required
+
+Added a load/save option on the title screen so that users are able to save their progress and continue where they left off rather than play all 5 nights at a time
+
+gameSave.txt file contains the night that was saved, for now it can be manipulated to unlock further nights than played through by simply opening the text file and changing the number to what night you wish to unlock
+
+-----------------
