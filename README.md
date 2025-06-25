@@ -4,6 +4,10 @@ Text based rendition of Five Night's at Freddy's coded in C++.
 As you progress to later nights, the animatronics will be more likely to move towards you and less likely to move away, nights last longer, energy will be more costly (so you need to use it wisely), and the animatronics will move more often.
 
 -----------------
+
+This game was created as a way for me to teach myself C++ as well as grow my skills with coding in general. When I set out to make this game, I focused on deepening my understanding of game logic and state management. Upon working on this game, I learned how to use threads to be able to run multiple blocks of code at once, which I uthilized to keep track of whether the player was alive, how much time had passed, when the animatronics should move, and how much energy was being used.
+
+-----------------
 PATCH NOTES (ONLY UPDATED FROM V0.1.2 AND ON)
 -----------------
 V0.1.2
