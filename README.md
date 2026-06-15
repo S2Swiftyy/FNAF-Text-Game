@@ -5,7 +5,7 @@ As you progress to later nights, the animatronics will be more likely to move to
 
 -----------------
 
-This game was created as a way for me to teach myself C++ as well as grow my skills with coding in general. When I set out to make this game, I focused on deepening my understanding of game logic and state management. Upon working on this game, I learned how to use threads to be able to run multiple blocks of code at once, which I uthilized to keep track of whether the player was alive, how much time had passed, when the animatronics should move, and how much energy was being used.
+This game was created as a way for me to teach myself C++ as well as grow my skills with coding in general. When I set out to make this game, I focused on deepening my understanding of game logic and state management. Upon working on this game, I learned how to use threads to be able to run multiple blocks of code at once, which I utilized to keep track of whether the player was alive, how much time had passed, when the animatronics should move, and how much energy was being used. I had to keep track of many different things for the game to run smooth and get harder as you progres. Some of these include tracking, level, enemy location, enemy visit history, enemy movement frequency, energy consumption, time, and player location (in the camera or not).
 
 -----------------
 PATCH NOTES (ONLY UPDATED FROM V0.1.2 AND ON)
